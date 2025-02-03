@@ -28,6 +28,22 @@ app.get('/hubspot/contacts', async (req, res) => {
     }
 });
 
+app.post('/api/add-contact-to-db', async (req, res) => {
+    let contact = req.body;
+    try {
+        const response = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts',contact, {
+            headers: {
+                'Authorization': `Bearer ${HUBSPOT_API_KEY}`
+            }
+        });
+        console.log(response)
+        res.json({response:response.data, success:true}); // Return HubSpot API response
+    } catch (error) {
+        res.status(500).json({ message: error.message, success: false });
+    }
+});
+
+
 app.post('/hubspot/create-contact', async (req, res) => {
     console.log(req.body);
     let { contact, company } = req.body;
@@ -146,7 +162,7 @@ app.post('/hubspot/create-contact', async (req, res) => {
             properties: [
                 {
                     name: 'dealname',
-                    value: `Deal for ${contact.firstName} ${contact.lastName}`,
+                    value: `Deal for ${contact.properties.firstname} ${contact.properties.lastname}`,
                 },
                 {
                     name: 'amount',
