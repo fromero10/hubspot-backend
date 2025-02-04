@@ -43,6 +43,17 @@ app.post('/api/add-contact-to-db', async (req, res) => {
     }
 });
 
+app.post('/api/add-contact-to-external-db', async (req, res) => {
+    let contact = req.body;
+    try {
+        const response = await axios.post('https://sa-tech-assessment.replit.app/api/assessment/contacts',contact);
+        console.log(response)
+        res.json({response:response.data, success:true}); // Return HubSpot API response
+    } catch (error) {
+        res.status(500).json({ message: error.message, success: false });
+    }
+});
+
 
 app.post('/hubspot/create-contact', async (req, res) => {
     console.log(req.body);
